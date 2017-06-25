@@ -1,33 +1,42 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Picker} from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Slider} from 'react-native';
+import Background from './Background';
+import { Dimensions } from 'react-native';
+const { width, height } = Dimensions.get('window');
 
 export default class Home extends React.Component {
     constructor(){
         super();
         this.state = {
-            text: 'Write your response'
+            text: 'Write your response',
+            numberOfColumns: 1
         };
 
-        this.handleChange = this.handleChange.bind(this);
+        this.handleChangeText = this.handleChangeText.bind(this);
+        this.handleChangeSlider = this.handleChangeSlider.bind(this);
     }
 
-    handleChange(event){
-        let text = event.target.value;
+    handleChangeText(textSource){
+        this.setState({text: textSource});
+    }
 
-        this.setState({text: text});
+    handleChangeSlider(value){
+        this.setState({numberOfColumns: value})
     }
 
     render() {
 
         const { navigate } = this.props.navigation;
         return (
-            <View style={styles.container}>
-                <Text>Search term: </Text>
-                <TextInput placeholder={this.state.text} style={styles.searchInput} onChange={this.handleChange} autoCorrect={true}/>
-                <Text>Columns: </Text>
-                <Text>{this.state.text}</Text>
-                <Button title="Search" onPress={() => navigate('Picture', {textSearch: this.state.text})} style={styles.button}/>
-            </View>
+                <Background>
+                    <Text style={{color: 'grey', marginBottom: 30, fontSize: 25}}>Make your dream come true</Text>
+                    <Text>Search term: </Text>
+                    <TextInput placeholder={this.state.text} style={styles.searchInput} onChangeText={(text) => this.handleChangeText(text)} autoCorrect={true} autoFocus={true}/>
+                    <Text>Columns: </Text>
+                    <Slider maximumValue={5} minimumValue={1} step={1} value={1} style={styles.searchSlider} onValueChange={(value) => this.handleChangeSlider(value)}/>
+                    <Text>{this.state.numberOfColumns}</Text>
+                    <Button title="Search" onPress={() => navigate('Picture', {textSearch: this.state.text, columns: this.state.numberOfColumns})} style={styles.button}/>
+                </Background>
         );
     }
 }
@@ -35,7 +44,6 @@ export default class Home extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -44,6 +52,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     searchInput: {
+        width: width / 2,
+        height: height / 15,
+        color: 'black'
+    },
+    searchSlider: {
         width: 150
     }
 });
